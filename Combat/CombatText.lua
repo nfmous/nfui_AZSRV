@@ -42,6 +42,8 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
     local activeTexts = {}
     local textPool = {}
     local pending = {}
+    local biggest
+    local currentStyle = nfUIDB.sctStyle or "Explosive"
     local spellTextures = {}
     local missingSpellTextures = {}
     local discoveredChildren = 0
@@ -74,6 +76,7 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         local index
         for index = table.getn(activeTexts), 1, -1 do ReleaseText(index) end
         pending = {}
+        biggest = nil
         origins = {}
         local _, data
         for _, data in pairs(plates) do data.origin = nil end
@@ -377,11 +380,13 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         text.origin = origin
         text.x, text.y = x, y
         text.started = GetTime()
-        text.impact = info.critical or info.kind == "miss"
-        text.sizeScale = info.critical and 1.5 or 1
-        text.arcX = arcDirection * math.random(36, 64)
-        text.launch = math.random(105, 130)
-        text.gravity = text.launch + 65
+        text.methodical = currentStyle == "Methodical"
+        text.duration = text.methodical and 1.1 or TEXT_DURATION
+        text.impact = not text.methodical and (info.critical or info.kind == "miss")
+        text.sizeScale = info.critical and (text.methodical and 1.2 or 1.5) or 1
+        text.arcX = arcDirection * (text.methodical and 6 or math.random(36, 64))
+        text.launch = text.methodical and 24 or math.random(105, 130)
+        text.gravity = text.methodical and 0 or text.launch + 65
         arcDirection = -arcDirection
         local color = SCHOOL_COLORS[info.school]
         if info.kind == "miss" or not color then color = {1, 0.82, 0} end
@@ -426,7 +431,7 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         local index
         for index = table.getn(activeTexts), 1, -1 do
             local text = activeTexts[index]
-            local progress = (now - text.started) / TEXT_DURATION
+            local progress = (now - text.started) / text.duration
             if progress >= 1 then
                 ReleaseText(index)
             else
@@ -450,9 +455,17 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
                 -- fixed during crit pop, including after the mob has died.
                 text.visual:SetScale(scale)
                 local alpha = 1
-                if progress > 0.68 then alpha = (1 - progress) / 0.32 end
+                local fadeStart = text.methodical and 0.75 or 0.68
+                if progress > fadeStart then alpha = (1 - progress) / (1 - fadeStart) end
                 text.holder:SetAlpha(alpha)
             end
+        end
+    end
+
+    local function FlushBiggest(now)
+        if biggest and now >= biggest.time + 0.2 then
+            table.insert(pending, biggest)
+            biggest = nil
         end
     end
 
@@ -461,7 +474,17 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         ScanPlates(false)
         local info = ParseCombatEvent(eventName, message)
         if not info or info.kind == "aura" or not info.targetName or info.targetName == "" then return end
-        table.insert(pending, {info = info, time = GetTime()})
+        local now = GetTime()
+        if currentStyle == "Biggest Hit" then
+            -- One winner across all enemies per fixed 200ms burst window.
+            -- Misses never open a window or displace a damage event.
+            FlushBiggest(now)
+            if info.kind ~= "damage" or type(info.amount) ~= "number" then return end
+            if not biggest then biggest = {info = info, time = now}
+            elseif info.amount > biggest.info.amount then biggest.info = info end
+        else
+            table.insert(pending, {info = info, time = now})
+        end
     end
 
     local function ApplyDamageMode()
@@ -511,6 +534,7 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         if not CustomEnabled() then return end
         ScanPlates(false)
         local now = GetTime()
+        FlushBiggest(now)
         UpdatePending(now)
         UpdateTexts(now)
     end)
@@ -524,6 +548,10 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         ScanPlates(true)
     end)
 
+    nfUIModules.ApplySCTStyle = function()
+        local style = nfUIDB.sctStyle or "Explosive"
+        if style ~= currentStyle then currentStyle = style; ResetDisplay() end
+    end
     nfUIModules.SelectDamageMode = SelectMode
     ApplyDamageMode()
     RebuildSpellTextures()

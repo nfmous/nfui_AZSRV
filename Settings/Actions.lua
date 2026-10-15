@@ -10,6 +10,11 @@ function C.SetDamageMode(mode)
         nfUIDB.damageMode=mode; nfUIDB.damageText=mode~="off"; C.ApplyDamageText()
     end
 end
+function C.SetSCTStyle(style)
+    if style~="Explosive" and style~="Methodical" and style~="Biggest Hit" then return end
+    nfUIDB.sctStyle=style
+    if nfUIModules.ApplySCTStyle then nfUIModules.ApplySCTStyle() end
+end
 local apply=C.Apply
 C.Apply=function()
     apply()

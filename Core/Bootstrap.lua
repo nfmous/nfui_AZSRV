@@ -5,6 +5,7 @@ end
 if type(nfUIPlatesDB)~="table" then nfUIPlatesDB={} end
 if nfUIDB.damageText==nil then nfUIDB.damageText=true end
 if nfUIDB.damageMode==nil then nfUIDB.damageMode=nfUIDB.damageText and "sct" or "off" end
+if nfUIDB.sctStyle~="Methodical" and nfUIDB.sctStyle~="Biggest Hit" then nfUIDB.sctStyle="Explosive" end
 if nfUIDB.compass==nil then nfUIDB.compass=true end
 
 -- Apply the user's verified zoom limit after saved client settings load.

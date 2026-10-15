@@ -33,8 +33,8 @@ local categories={
         fields={{"backdropOpacity","Backdrop opacity"},{"autoWidth","Fit width to entries","check"},{"autoHeight","Fit height to entries","check"},{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"},{"dpsCollapsed","Expanded","check","root",true}}},
     {key="runDisplay",title="Run Stats",description="Upward-opening panel with a fixed bottom header and saved placement.",
         fields={{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"},{"font","Text size"},{"backdrop","Show backdrop","check"},{"runPanel","Show Run Stats","check","root"},{"runCollapsed","Expanded","check","root",true},{"resetRun","Reset local run tracking","action"}}},
-    {key="combatText",title="Combat text",description="Choose one damage-text renderer.",
-        fields={{"damageMode","Damage text mode","select","root"}}}
+    {key="combatText",title="Combat text",description="Scrolling styles apply to icon combat text.",
+        fields={{"damageMode","Damage text mode","select","root"},{"sctStyle","Scrolling text style","select","root"}}}
 }
 local selected=categories[1]
 local function SettingsCategory(key)
@@ -60,7 +60,8 @@ end
 local function WriteValue(key,value)
     local field=SelectedField(key)
     if field and field[5] then value=not value end
-    if key=="damageMode" then C.SetDamageMode(value)
+    if key=="sctStyle" then C.SetSCTStyle(value)
+    elseif key=="damageMode" then C.SetDamageMode(value)
     elseif key=="runCollapsed" then C.SetRunCollapsed(value)
     elseif key=="dpsCollapsed" then C.SetDPSCollapsed(value)
     else SelectedSettings(key)[key]=value end
@@ -147,7 +148,7 @@ function C.Refresh()
             elseif field[3]=="check" then
                 row.check:SetChecked(ReadValue(key)); row.check:Show()
             elseif field[3]=="select" then
-                row.choiceValues=key=="damageMode" and damageModes or key=="amount" and {"Target","All","5 max","10 max"} or key=="anchor" and {"BOTTOM","TOP"} or key=="healthArea" and {"Left","Middle","Right"} or {"Percentage","CurrentHP+%","Numerical"}
+                row.choiceValues=key=="sctStyle" and {"Explosive","Methodical","Biggest Hit"} or key=="damageMode" and damageModes or key=="amount" and {"Target","All","5 max","10 max"} or key=="anchor" and {"BOTTOM","TOP"} or key=="healthArea" and {"Left","Middle","Right"} or {"Percentage","CurrentHP+%","Numerical"}
                 row.choice:SetText(ChoiceLabel(key,ReadValue(key))); row.choice:Show()
                 row.menu:SetHeight(table.getn(row.choiceValues)*31+6)
                 for index,item in ipairs(row.choiceItems) do
@@ -346,12 +347,12 @@ local function Build()
         if selected.key=="compassStyle" then C.Settings().compass=true
         elseif selected.key=="runDisplay" then C.Settings().runPanel=true;C.SetRunCollapsed(true)
         elseif selected.key=="dpsDisplay" then C.SetDPSCollapsed(true)
-        elseif selected.key=="combatText" then C.SetDamageMode("sct") end
+        elseif selected.key=="combatText" then C.SetDamageMode("sct");C.SetSCTStyle("Explosive") end
         C.Reset(selected.key);C.Refresh()
     end)
     Button("nfUISettingsResetAll",footer,"Reset all",262,-6,105,function()
         C.Settings().compass=true;C.Settings().runPanel=true
-        C.SetRunCollapsed(true);C.SetDPSCollapsed(true);C.SetDamageMode("sct")
+        C.SetRunCollapsed(true);C.SetDPSCollapsed(true);C.SetDamageMode("sct");C.SetSCTStyle("Explosive")
         C.Reset();C.Refresh()
     end)
     Button("nfUISettingsDone",footer,"Done",625,-6,100,function() panel:Hide() end)
