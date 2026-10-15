@@ -226,11 +226,13 @@ local function SkinPlate(plate)
         local kind=region:GetObjectType()
         if kind=="FontString" then
             if not source.name then source.name=region else source.level=region end
-            region:SetWidth(0.001)
-        elseif kind=="Texture" and index<table.getn(regions) then region:SetTexture(nil);region:SetTexCoord(0,0,0,0) end
+            region:SetAlpha(0)
+        elseif kind=="Texture" and index<table.getn(regions) then region:SetAlpha(0);region:SetTexCoord(0,0,0,0) end
     end
     if not source.name then return end
-    source.health:SetStatusBarTexture(nil)
+    -- A nil status-bar texture is a no-op on some clients. Hide only the
+    -- native bar child; the plate stays visible as our anchor/data source.
+    source.health:SetAlpha(0)
     local W=nfUIWidgets
     local overlay=CreateFrame("Frame",nil,plate)
     overlay.stock=source;overlay.plate=plate;overlay.motion={};overlay:SetAllPoints(plate);overlay:SetAlpha(0)
