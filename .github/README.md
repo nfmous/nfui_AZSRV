@@ -48,7 +48,8 @@ A clean, customizable HUD for **Azeroth Survivors**. Built to keep the informati
 
 ## 🚀 GET STARTED
 
-1. Put the addon in **`Interface/AddOns/nfUI`**. The folder must be named **`nfUI`**.
+1. Download the install ZIP and extract its **`nfUI`** folder into your **AddOns** directory.
+   Using GitHub’s source archive? Open its outer repository folder and copy **`nfUI`** from inside it.
 2. Enable **nfUI** in your addon list.
 3. Play—or open **`/nfui`** and make it yours.
 

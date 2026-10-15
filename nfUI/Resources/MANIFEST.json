@@ -1,7 +1,4 @@
 {
-  ".gitattributes": "c6b409229d59a6fd887ad0695301309c08290fabf0efcefffc4465fc924ee286",
-  ".github/README.md": "8fe0e7a1b84bc049ba75d78e27b9d18e269205740ba0f3f4f4cf5aa456c2e4b8",
-  ".gitignore": "5be29c28c57906e84ea830896d2a49ab62b87c4871efbb25deb88832de5d4a44",
   "Combat/CombatParser.lua": "8516dcc095fc512d5eda6d6d6aed53fcffdc0e07deb2e4d5cd09b0fd85eef111",
   "Combat/CombatText.lua": "81357f03ccf27bf868d94a5f2f245515e174a044d092398b4f909135a7489b34",
   "Combat/QuickText.lua": "2046b5bfa4ece85f5f790fb29fd020945b06d5f59180cbdc279b316037ddceb8",
@@ -24,6 +21,7 @@
   "HUD/StatsHUD.lua": "d1b628657bfb91140d08723498b8b2a294101f3b135ba4a7fff7eb505bb545da",
   "nfUI.lua": "fe7d5cce265c5c5acaef9ffabe59144622e906ed8e92e7ade7777cec8656f498",
   "nfUI.toc": "bd5e17d3764ee62eaf4c2c53f027111ca67e8d8ac1d551d9397d0a8c9212a19a",
+  "Resources/docs/README.md": "ee43a4001e88e24f9598d9d94a533d2ecb48daf10001f3bf4b83b393f6ac4790",
   "Resources/docs/REDUNDANCY_AUDIT.md": "72346400046bc1f2644f7c38e81fd4cafa945b22dccb74574f66a547cab61ecb",
   "Resources/licenses/HUD-LICENSE.txt": "bdd48e94146e2f15e46e4dad655eb634eee75d9a30595d62372e033c4125901b",
   "Resources/licenses/NameplateSCT-LICENSE.txt": "95c550a32714d751a4ac1c74c05f4aa30da7104beda103042dab0529c4ffd9e6",
