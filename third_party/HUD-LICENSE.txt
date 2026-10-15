@@ -1,0 +1,12 @@
+Limited License – Code Permitted, Custom Textures Restricted
+Copyright (c) 2025-present guzruul
+
+Code may be used, copied, modified, and distributed freely, with or without attribution.
+
+Custom textures created by the author (the "Restricted Materials") may not be used, copied, modified, or distributed without express written permission.
+
+All other rights not explicitly granted remain with the copyright holder.
+
+The Materials are provided "AS IS," without warranty. The author is not liable for any damages or claims.
+
+–– End of License ––

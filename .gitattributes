@@ -1,0 +1,2 @@
+# Preserve exact file bytes so manifest hashes survive checkout.
+* -text

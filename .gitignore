@@ -1,0 +1,14 @@
+# Local editor and operating-system files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Local archives and backups
+*.zip
+*.bak
+*.orig
+*.rej
