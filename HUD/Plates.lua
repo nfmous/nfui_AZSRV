@@ -165,9 +165,22 @@ local function UpdatePlateDebuffs(overlay,target)
     end
 end
 
+local function SuppressStock(overlay)
+    local stock=overlay.stock
+    -- Some native plate drivers restore child visibility when a unit changes.
+    -- Our overlay is a sibling of the health bar, so hiding it keeps our view
+    -- and the native parent/hit region alive. Hidden bars still expose values.
+    if stock.health:IsShown() then stock.health:Hide() end
+    for _,region in ipairs(stock.hiddenRegions or {}) do
+        if region:IsShown() then region:Hide() end
+    end
+    if stock.fill and stock.fill:IsShown() then stock.fill:Hide() end
+end
+
 local function UpdatePlate()
 	local overlay = this
 	local stock = overlay.stock
+    SuppressStock(overlay)
 
 	local name = stock.name:GetText()
 	if name ~= overlay.lastName then
@@ -221,21 +234,27 @@ local function SkinPlate(plate)
     if plate.nfUIPlateOverlay then return end
     local bar=plate:GetChildren()
     if not bar or not bar.GetMinMaxValues then return end
-    local regions={plate:GetRegions()};local source={health=bar}
+    local regions={plate:GetRegions()};local source={health=bar,hiddenRegions={}}
     for index,region in ipairs(regions) do
         local kind=region:GetObjectType()
         if kind=="FontString" then
             if not source.name then source.name=region else source.level=region end
-            region:SetAlpha(0)
-        elseif kind=="Texture" and index<table.getn(regions) then region:SetAlpha(0);region:SetTexCoord(0,0,0,0) end
+            region:SetAlpha(0);table.insert(source.hiddenRegions,region)
+        elseif kind=="Texture" and index<table.getn(regions) then
+            region:SetAlpha(0);region:SetTexCoord(0,0,0,0);table.insert(source.hiddenRegions,region)
+        end
     end
     if not source.name then return end
     -- A nil status-bar texture is a no-op on some clients. Hide only the
     -- native bar child; the plate stays visible as our anchor/data source.
     source.health:SetAlpha(0)
+    source.fill=source.health.GetStatusBarTexture and source.health:GetStatusBarTexture()
+    if source.fill and not source.fill.Hide then source.fill=nil end
+    if source.fill then source.fill:SetAlpha(0) end
     local W=nfUIWidgets
     local overlay=CreateFrame("Frame",nil,plate)
     overlay.stock=source;overlay.plate=plate;overlay.motion={};overlay:SetAllPoints(plate);overlay:SetAlpha(0)
+    SuppressStock(overlay)
     overlay.bar=CreateFrame("StatusBar",nil,overlay)
     overlay.bar:SetMinMaxValues(0,1);overlay.bar:SetStatusBarTexture(W.texture);overlay.bar:SetPoint("CENTER",overlay,"CENTER",0,-4)
     overlay.border=W.Fill(overlay.bar,{0,0,0,1},"BACKGROUND",-1)
