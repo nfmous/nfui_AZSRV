@@ -25,14 +25,16 @@ local categories={
         fields={{"enabled","Nameplates enable","check"},{"amount","Nameplate amount","select"},{"collision","Nameplate collision","check"},{"stacking","Nameplate stacking","check"},{"scale","Scale"},{"height","Height"},{"width","Width"},{"color","Bar color","color"},{"rankColors","Use rank colors","check"},{"showNames","Show names","check"},{"abbreviate","Abbreviate names","check"},{"nameFont","Name font size"},{"healthFont","Health font size"},{"healthText","Health text","select"}}},
     {key="micro",title="Micro buttons",description="Scale the fading buttons in the bottom-right corner.",
         fields={{"scale","Button scale"}}},
-    {key="compassStyle",title="Compass",description="Skyrim-style heading strip and detected map markers. /nfui compass toggles it.",
-        fields={{"width","Strip width"},{"height","Strip height"},{"anchor","Anchor position","select"},{"scale","Strip scale"},{"fullWidth","Full screen width","check"},{"iconSize","Icon size"},{"labelFont","Label size"}}},
+    {key="compassStyle",title="Compass",description="Heading strip and detected map markers.",
+        fields={{"width","Strip width"},{"height","Strip height"},{"anchor","Anchor position","select"},{"scale","Strip scale"},{"fullWidth","Full screen width","check"},{"iconSize","Icon size"},{"labelFont","Label size"},{"compass","Show compass","check","root"}}},
     {key="statsDisplay",title="Character stats",description="Persistent live character stats. Use Movers to position it.",
         fields={{"width","Panel width"},{"height","Panel height"},{"scale","Panel scale"},{"font","Label font size"},{"valueFont","Value font size"},{"headingFont","Heading font size"},{"backdrop","Show backdrop","check"},{"headings","Show headings","check"}}},
     {key="dpsDisplay",title="DPS Meter",description="Automatic dimensions fit the current damage-source entries.",
-        fields={{"backdropOpacity","Backdrop opacity"},{"autoWidth","Fit width to entries","check"},{"autoHeight","Fit height to entries","check"},{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"}}},
+        fields={{"backdropOpacity","Backdrop opacity"},{"autoWidth","Fit width to entries","check"},{"autoHeight","Fit height to entries","check"},{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"},{"dpsCollapsed","Expanded","check","root",true}}},
     {key="runDisplay",title="Run Stats",description="Upward-opening panel with a fixed bottom header and saved placement.",
-        fields={{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"},{"font","Text size"},{"backdrop","Show backdrop","check"}}}
+        fields={{"width","Expanded width"},{"height","Expanded height"},{"scale","Panel scale"},{"font","Text size"},{"backdrop","Show backdrop","check"},{"runPanel","Show Run Stats","check","root"},{"runCollapsed","Expanded","check","root",true},{"resetRun","Reset local run tracking","action"}}},
+    {key="combatText",title="Combat text",description="Choose one damage-text renderer.",
+        fields={{"damageMode","Damage text mode","select","root"}}}
 }
 local selected=categories[1]
 local function SettingsCategory(key)
@@ -42,7 +44,34 @@ local function SettingsCategory(key)
     end
     return selected.key
 end
-local function SelectedSettings(key) return C.Settings()[SettingsCategory(key)] end
+local function SelectedField(key)
+    for _,field in ipairs(selected.fields) do if field[1]==key then return field end end
+end
+local function SelectedSettings(key)
+    local field=SelectedField(key)
+    return field and field[4]=="root" and C.Settings() or C.Settings()[SettingsCategory(key)]
+end
+local function ReadValue(key)
+    local value=SelectedSettings(key)[key]
+    local field=SelectedField(key)
+    if field and field[5] then return not value end
+    return value
+end
+local function WriteValue(key,value)
+    local field=SelectedField(key)
+    if field and field[5] then value=not value end
+    if key=="damageMode" then C.SetDamageMode(value)
+    elseif key=="runCollapsed" then C.SetRunCollapsed(value)
+    elseif key=="dpsCollapsed" then C.SetDPSCollapsed(value)
+    else SelectedSettings(key)[key]=value end
+end
+local damageModes={"sct","quick","default","off"}
+local damageLabels={sct="Icon combat text",quick="Compact damage labels",default="Native damage text",off="Disabled"}
+local function ChoiceLabel(key,value)
+    if key=="damageMode" then return damageLabels[value] end
+    if key=="anchor" then return value=="TOP" and "Top Center" or "Bottom Center" end
+    return value
+end
 
 local panel,content,rows,contentScroll
 local resize
@@ -112,16 +141,18 @@ function C.Refresh()
             row.key=key
             local lo,hi,step=C.Range(SettingsCategory(key),key)
             row.label:SetText(field[2])
-            row.check:Hide(); row.choice:Hide(); row.menu:Hide(); row.slider:Hide(); row.value:Hide();row.color:Hide()
-            if field[3]=="check" then
-                row.check:SetChecked(db[SettingsCategory(key)][key]); row.check:Show()
+            row.check:Hide(); row.choice:Hide(); row.menu:Hide(); row.slider:Hide(); row.value:Hide();row.color:Hide();row.action:Hide()
+            if field[3]=="action" then
+                row.action:SetText("Reset tracking");row.action:Show()
+            elseif field[3]=="check" then
+                row.check:SetChecked(ReadValue(key)); row.check:Show()
             elseif field[3]=="select" then
-                row.choiceValues=key=="amount" and {"Target","All","5 max","10 max"} or key=="anchor" and {"BOTTOM","TOP"} or key=="healthArea" and {"Left","Middle","Right"} or {"Percentage","CurrentHP+%","Numerical"}
-                row.choice:SetText(key=="anchor" and (db[SettingsCategory(key)][key]=="TOP" and "Top Center" or "Bottom Center") or db[SettingsCategory(key)][key]); row.choice:Show()
+                row.choiceValues=key=="damageMode" and damageModes or key=="amount" and {"Target","All","5 max","10 max"} or key=="anchor" and {"BOTTOM","TOP"} or key=="healthArea" and {"Left","Middle","Right"} or {"Percentage","CurrentHP+%","Numerical"}
+                row.choice:SetText(ChoiceLabel(key,ReadValue(key))); row.choice:Show()
                 row.menu:SetHeight(table.getn(row.choiceValues)*31+6)
                 for index,item in ipairs(row.choiceItems) do
                     local value=row.choiceValues[index]
-                    if value then item:SetText(key=="anchor" and (value=="TOP" and "Top Center" or "Bottom Center") or value); item:Show() else item:Hide() end
+                    if value then item:SetText(ChoiceLabel(key,value)); item:Show() else item:Hide() end
                 end
             elseif field[3]=="color" then
                 local color=db[SettingsCategory(key)][key]
@@ -237,13 +268,16 @@ local function Build()
         option.check:SetPoint("TOPRIGHT",option,"TOPRIGHT",-15,0)
         option.check:SetScript("OnClick",function()
             if refreshing or not option.key then return end
-            SelectedSettings(option.key)[option.key]=this:GetChecked() and true or false
+            WriteValue(option.key,this:GetChecked() and true or false)
             if selected.key=="nameplates" then
                 local settings=C.Settings().nameplates
                 if option.key=="stacking" and settings.stacking then settings.collision=true end
                 if option.key=="collision" and not settings.collision then settings.stacking=false end
             end
             C.Apply(); C.Refresh()
+        end)
+        option.action=Button("nfUISettingsAction"..i,option,"",235,0,275,function()
+            if option.key=="resetRun" then nfUI_ResetRun();C.Refresh() end
         end)
         option.choice=Button("nfUISettingsChoice"..i,option,"",235,0,275,function()
             if option.menu:IsShown() then option.menu:Hide() else option.menu:Show() end
@@ -258,7 +292,7 @@ local function Build()
         for index,value in ipairs({"Percentage","CurrentHP+%","Numerical","10 max"}) do
             local choiceIndex=index
             option.choiceItems[index]=Button("nfUISettingsChoice"..i.."Item"..index,option.menu,value,3,-3-(index-1)*31,269,function()
-                SelectedSettings(option.key)[option.key]=option.choiceValues[choiceIndex]
+                WriteValue(option.key,option.choiceValues[choiceIndex])
                 if selected.key=="player" and option.key=="healthArea" then
                     local positions=C.Settings().positions
                     if positions then positions.playerValue=nil;positions.playerName=nil end
@@ -308,8 +342,18 @@ local function Build()
     footer:SetWidth(736); footer:SetHeight(40); footer:SetPoint("BOTTOM",body,"BOTTOM",0,10)
     Flat(footer,0.075,0.085,0.11)
     Button("nfUISettingsMove",footer,"Movers",7,-6,115,EditLayout)
-    Button("nfUISettingsReset",footer,"Reset section",130,-6,124,function() C.Reset(selected.key); C.Refresh() end)
-    Button("nfUISettingsResetAll",footer,"Reset all",262,-6,105,function() C.Reset(); C.Refresh() end)
+    Button("nfUISettingsReset",footer,"Reset section",130,-6,124,function()
+        if selected.key=="compassStyle" then C.Settings().compass=true
+        elseif selected.key=="runDisplay" then C.Settings().runPanel=true;C.SetRunCollapsed(true)
+        elseif selected.key=="dpsDisplay" then C.SetDPSCollapsed(true)
+        elseif selected.key=="combatText" then C.SetDamageMode("sct") end
+        C.Reset(selected.key);C.Refresh()
+    end)
+    Button("nfUISettingsResetAll",footer,"Reset all",262,-6,105,function()
+        C.Settings().compass=true;C.Settings().runPanel=true
+        C.SetRunCollapsed(true);C.SetDPSCollapsed(true);C.SetDamageMode("sct")
+        C.Reset();C.Refresh()
+    end)
     Button("nfUISettingsDone",footer,"Done",625,-6,100,function() panel:Hide() end)
     Text(footer,"Saved automatically",381,-13,10)
     local function LayoutWindow()

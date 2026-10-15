@@ -11,7 +11,7 @@ Changes:
 - Centralized region scale lookup used by unit text and both dimension-match paths.
 - Removed nine unused ornate timer textures from the addon. Recoverable copies are in `D:/Games/AzerothSurvivors/analysis/backups/nfUI-unused-timer-art`; the active gradient and minimap feather masks remain.
 
-The quick/native/SCT damage modes are alternatives selected through one command, not concurrent duplicate renderers. The character-sheet stats, persistent character stats, run statistics and source breakdown have separate contexts; the audit did not remove requested features because they share underlying data. Fine adjustments and main settings edit the same saved values. Native HUD replacements restore the game HUD when valid data is unavailable.
+The quick/native/SCT damage modes are alternatives selected through Combat text settings, not concurrent duplicate renderers. The character-sheet stats, persistent character stats, run statistics and source breakdown have separate contexts; the audit did not remove requested features because they share underlying data. Fine adjustments and main settings edit the same saved values. Native HUD replacements restore the game HUD when valid data is unavailable.
 
 Validation: complete simulated TOC boot/HUD lifecycle, unified settings callbacks/reset and dimension-link regression checks. Live UI rendering remains unverified.
 

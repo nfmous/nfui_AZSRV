@@ -484,28 +484,6 @@ nfUIModules:NewMod("NameplateCombatText", 6, function()
         end
     end
 
-    -- Module initialization uses nfUIModules's private environment; slash aliases
-    -- must be registered in the real global table for the stock chat parser.
-    _G.SLASH_NFUISCT1 = "/sct"
-    _G.SlashCmdList = _G.SlashCmdList or {}
-    _G.SlashCmdList["NFUISCT"] = function(message)
-        local mode = string.gsub(string.lower(message or ""), "^%s*(.-)%s*$", "%1")
-        local feedback
-        if mode == "on" then
-            SelectMode("on")
-            feedback = "Custom SCT enabled. V controls nameplates and custom combat text."
-        elseif mode == "off" then
-            SelectMode("off")
-            feedback = "Custom and vanilla SCT disabled."
-        elseif mode == "default" then
-            SelectMode("default")
-            feedback = "Vanilla SCT enabled; custom SCT disabled."
-        else
-            feedback = "Usage: /sct on | off | default. Current mode: " .. sctMode .. "."
-        end
-        if DEFAULT_CHAT_FRAME then DEFAULT_CHAT_FRAME:AddMessage("nfUI: " .. feedback) end
-    end
-
     local frame = CreateFrame("Frame", "nfUIModules_NameplateCombatText")
     local index
     for index = 1, table.getn(COMBAT_EVENTS) do frame:RegisterEvent(COMBAT_EVENTS[index]) end

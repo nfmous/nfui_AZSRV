@@ -12,18 +12,16 @@ A configurable HUD for Azeroth Survivors, loaded through the addon environment. 
 - Run Stats and DPS unfold upward from their bottom headers. Their arrows follow the side of the screen.
 - Minimap zoom buttons appear on hover. Feathering replaces its outer border.
 
-| Command | Action |
-| --- | --- |
-| `/nfui` | Open or close settings |
-| `/nfui run` | Toggle Run Stats |
-| `/nfui run reset` | Reset local run tracking |
-| `/nfui dps` | Open the DPS meter |
-| `/nfui dps close` | Collapse the DPS meter |
-| `/nfui damage sct` | Icon combat text |
-| `/nfui damage quick` | Compact damage labels |
-| `/nfui damage default` | Native damage text |
-| `/nfui damage off` | Disable damage text |
-| `/nfui compass on` or `off` | Set compass visibility |
+## Feature controls
+
+Open `/nfui` and select a section:
+
+- **Run Stats:** show or hide the panel, expand or collapse it, and reset local hit/crit tracking. Resetting does not reset native run totals.
+- **DPS Meter:** use **Expanded** to open or collapse the meter.
+- **Combat text:** choose icon combat text, compact damage labels, native damage text or disabled.
+- **Compass:** toggle **Show compass**.
+
+These controls replace the former `/nfui` feature subcommands and `/sct` alias. `/nfui` opens settings.
 
 ## Behavior and limits
 

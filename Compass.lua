@@ -266,7 +266,7 @@ frame:SetScript("OnUpdate",function()
     if currentWidth~=screenWidth then screenWidth=currentWidth; C.LayoutCompass() end
     C.UpdateCompass()
 end)
--- A UIParent driver permits re-enabling a hidden compass through events and commands.
+-- A UIParent driver keeps zone events active while the compass is hidden.
 local loader=CreateFrame("Frame","nfUICompassLoader",UIParent)
 for _,eventName in ipairs({"PLAYER_ENTERING_WORLD","ZONE_CHANGED","ZONE_CHANGED_NEW_AREA","WORLD_MAP_UPDATE"}) do loader:RegisterEvent(eventName) end
 loader:SetScript("OnEvent",function()

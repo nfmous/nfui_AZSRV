@@ -39,9 +39,9 @@ local HEALTH_HEIGHT = BUTTON_SIZE - POWER_HEIGHT - 1
 
 local ENEMY = { 0.80, 0.22, 0.22 }
 
-local CHAT_SIZE = 12                            -- default; /nfui chat N changes it
+local CHAT_SIZE = 12                            -- default; adjustable in Chat settings
 
--- Saved between sessions; the /nfui command at the end of the file changes them.
+-- Saved between sessions and edited through the settings menu.
 local function Settings()
 	nfUIDB = nfUIDB or {}
 	if nfUIDB.damageText == nil then
@@ -756,7 +756,7 @@ end
 -- Damage numbers: small, quick, and gone. A number pops over the enemy it hit,
 -- shoots up and fades within half a second; a critical strike is larger and
 -- gold. They replace the engine's own floating numbers while switched on
--- (/nfui damage switches back and forth).
+-- (choose the renderer in Combat text settings).
 --
 -- The addon reads hits from the combat log, which names the enemy but not
 -- which one of several with that name. The number goes over one of them.
