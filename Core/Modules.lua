@@ -14,7 +14,7 @@ end
 
 function nfUIModules:GetInfoOrCons(kind)
     local path = "Interface\\AddOns\\nfUI\\"
-    if kind == "tex" then return path .. "media\\tex\\" end
+    if kind == "tex" then return path .. "Resources\\media\\tex\\" end
     return path
 end
 

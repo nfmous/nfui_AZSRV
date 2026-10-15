@@ -11,7 +11,7 @@ end
 function C.ApplyMapFeather()
     if not Minimap then return end
     local amount=math.max(0,math.min(50,math.floor(C.Settings().minimap.feather+0.5)))
-    local path=amount==0 and "Interface\\Buttons\\WHITE8X8" or "Interface\\AddOns\\nfUI\\media\\tex\\minimap\\feather-"..amount..".tga"
+    local path=amount==0 and "Interface\\Buttons\\WHITE8X8" or "Interface\\AddOns\\nfUI\\Resources\\media\\tex\\minimap\\feather-"..amount..".tga"
     if path~=appliedMask then Minimap:SetMaskTexture(path);appliedMask=path end
 end
 local function Install()

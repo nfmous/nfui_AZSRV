@@ -774,7 +774,7 @@ loader:SetScript("OnEvent", function()
 		HideStockUnitFrames()
 		HideStockBuffs()
 		LayoutBar()
-		-- Map.lua installs the shared minimap layout.
+		-- HUD/Map.lua installs the shared minimap layout.
 		MoveMicroButtons()
 		HideMicroButtons()
 		ApplyFonts()

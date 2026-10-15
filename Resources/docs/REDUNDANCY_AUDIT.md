@@ -18,3 +18,7 @@ Validation: complete simulated TOC boot/HUD lifecycle, unified settings callback
 ## Standalone cleanup
 
 Removed cross-addon profile imports, the embedded profile seed, comparison files and the legacy slash alias. Existing nfUI saved variables remain. Replaced character pane, ability tooltip and shield reader implementations; rebuilt unit/aura rendering and compact damage text around shared widgets and the localized parser. Both character-stat views now use one declarative model. Nameplate skin/debuff rendering uses the same widgets. Private runtime fields use nfUI names. Replaced accumulated historical README content with current controls and limitations. Required source provenance and license notices remain.
+
+## Folder organization
+
+Core holds initialization, shared widgets and data helpers. Settings holds the configuration, movers and adjustment actions. HUD holds visual HUD modules. Combat holds damage parsing and renderers. Resources holds textures, notices, audit documentation and file hashes. nfUI.lua and nfUI.toc are the only visible root files; GitHub reads .github/README.md. TOC dependency order is unchanged.
