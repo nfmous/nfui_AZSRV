@@ -1,40 +1,55 @@
 # nfUI
+## LESS CLUTTER. MORE GAME.
 
-A configurable HUD for Azeroth Survivors, loaded through the addon environment. Enable nfUI in the addon list, then use `/nfui` to open settings. Existing `nfUIDB` and `nfUIPlatesDB` settings are preserved; profiles from other addons are not imported.
+A clean, customizable HUD for **Azeroth Survivors**. Built to keep the information you need in view—and the rest out of your way.
 
-## Controls
+## ✨ THE GOOD STUFF
 
-- Settings: player/target frames, character stats, nameplates, compass, minimap, chat, run panels, DPS meter and combat text.
-- Unlock movers in settings to position elements. The grid snaps anchors; hold Shift to bypass snapping.
-- Right-click a mover for adjustments and persistent Width Match / Height Match links. Choose a match, then click the element to follow.
-- Numeric controls accept typed values; mover adjustments also have single-step buttons.
-- Resize settings with the bottom-right grip. The control layout scales without wrapping.
-- Run Stats and DPS unfold upward from their bottom headers. Their arrows follow the side of the screen.
-- Minimap zoom buttons appear on hover. Feathering replaces its outer border.
+- **MINIMAL CLUTTER** — Thin bars, clean icons and compact panels.
+- **HIGHLY CUSTOMIZABLE** — Move, resize, recolor and tune your UI.
+- **LIGHTWEIGHT BY DESIGN** — Compact Lua modules, shared UI helpers and reusable display elements.
+- **READY TO PLAY** — Starts with our curated layout, adapted to your screen and UI scale.
+- **YOUR SETTINGS STAY YOURS** — Updates keep your existing layout.
 
-## Feature controls
+## 🧭 A COMPASS THAT KEEPS UP
 
-Open `/nfui` and select a section:
+- **Heading at a glance.** A smooth, Skyrim-style direction strip.
+- **Map landmarks in view.** Supported map markers appear along the compass.
+- **Lost the marker? Follow the edge.** Icons stick to the nearest side until you turn toward them.
+- **Thin bar. Big icons. Your call.** Adjust bar height, icon size and labels separately.
+- **Top or bottom.** Choose your anchor and width.
 
-- **Run Stats:** show or hide the panel, expand or collapse it, and reset local hit/crit tracking. Resetting does not reset native run totals.
-- **DPS Meter:** use **Expanded** to open or collapse the meter.
-- **Combat text:** choose icon combat text, compact damage labels, native damage text or disabled.
-- **Compass:** toggle **Show compass**.
+### ⚠️ BATTLEGROUND CACHES
 
-These controls replace the former `/nfui` feature subcommands and `/sct` alias. `/nfui` opens settings.
+**THE COMPASS CANNOT TRACK BATTLEGROUND CACHES: THEIR POSITIONS ARE NOT EXPOSED TO ADDONS THROUGH THE API.**
 
-## Behavior and limits
+- **Cache tracking is planned if the API adds that information.**
+- Cache counters and costs do **not** provide a cache's location.
 
-The compass tracks map landmarks and registered marker providers. Off-screen bearings stay at the nearest strip edge; icons shift vertically to remain on screen. Random world-only Battleground Caches cannot currently be located through the identified addon APIs, so automatic cache detection is not implemented.
+## 🎯 THE REST OF YOUR HUD, CLEANED UP
 
-Nameplate stacking prefers upward placement, with a downward fallback near the top of the screen. Movement and appearance transitions take two seconds. Projected scale and screen position approximate proximity; they are not exact world distance. Native nameplate hit regions remain at their original anchors.
+- **Player & target frames** — Compact health, power and shield displays. Hide your name or change health-text placement.
+- **Smart nameplates** — Visibility limits, collision handling and upward-first stacking with smooth transitions.
+- **Borderless minimap** — Adjustable feathering and zoom buttons that appear on hover.
+- **Run progress** — A grey-to-green timer strip with boss-spawn ticks.
+- **Run Stats & DPS** — Compact panels that unfold upward. Expand or collapse them when you need them.
+- **Character stats** — Choose the stats you care about. Zero values stay hidden.
+- **Combat text** — Icon text, compact numbers, native text or off.
+- **Chat & tooltips** — Adjustable chat backdrop and movable tooltip placement.
 
-Run, meter and character values use the client's available native data. The local run fallback can differ from native totals. Zero character stats are hidden; Health and Lives are hidden from the persistent display. Camera zoom limit factor 5 is applied at startup without changing the current zoom distance.
+## 🛠️ MAKE IT YOURS
 
-## Implementation
+- Type **`/nfui`**. Everything starts in settings.
+- **Unlock Movers** to drag your HUD into place.
+- **Snap to the grid** for clean alignment. Hold **Shift** to bypass it.
+- **Right-click a mover** for fine adjustments and **Width Match / Height Match**.
+- **Type exact numbers** into adjustment fields. Use **+ / −** for small changes.
+- **Resize the settings window** with its bottom-right grip.
 
-Shared widgets, a shared character-stat model and one localized combat-event parser serve the HUD modules. Unit frames, auras, character pane, ability tooltips, shield reading and compact damage labels have dedicated nfUI implementations. Selected adapted combat-text code remains credited in its source and in `third_party`.
+## 🚀 GET STARTED
 
-The addon targets the legacy Lua interface. Simulated lifecycle and targeted regression checks run outside the shipped folder; live appearance and native hit testing still require in-game verification. Use `/reload` after updating.
+1. Put the addon in **`Interface/AddOns/nfUI`**. The folder must be named **`nfUI`**.
+2. Enable **nfUI** in your addon list.
+3. Play—or open **`/nfui`** and make it yours.
 
-Third-party notices are in [third_party/README.md](third_party/README.md). Backups and comparison material are kept outside this addon.
+**Updating? Use `/reload` after replacing the files.**

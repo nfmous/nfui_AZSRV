@@ -1,5 +1,7 @@
 -- Initialize only nfUI-owned saved variables. Existing profiles are retained.
-if type(nfUIDB)~="table" then nfUIDB={} end
+if type(nfUIDB)~="table" or not next(nfUIDB) then
+    nfUIDB=nfUIBuildStarterProfile(UIParent:GetWidth(),UIParent:GetHeight())
+end
 if type(nfUIPlatesDB)~="table" then nfUIPlatesDB={} end
 if nfUIDB.damageText==nil then nfUIDB.damageText=true end
 if nfUIDB.damageMode==nil then nfUIDB.damageMode=nfUIDB.damageText and "sct" or "off" end
